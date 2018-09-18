@@ -6,6 +6,8 @@ Scanner in = new Scanner(System.in);
 int W = 15;  // pani
 int H = 100;  // drezhi
 String fileName = "Spring-Flowers-1.jpg";  // nawi faili wena ka lahaman foldar danrawa
+int drawType = 1;  // 0=bazna  1=chwargosha
+boolean chwarChewa = true;  // true=chwarchewa bkesha    false=chwarchewa makesha
 // lera badwawa dastkari maka
 int dia;
 
@@ -46,7 +48,6 @@ PImage img;
 
 void setup(){
   background(200);
-  int drawType = 0;
   
   size(1200,700);
   noStroke();
@@ -72,6 +73,7 @@ void setup(){
       if (drawType==0){
         ellipse(x,y,dia,dia);
       }else{
+        if (chwarChewa) stroke(0);
         rect(x-dia/2,y-dia/2,dia,dia);
       }
     }
@@ -106,16 +108,21 @@ void setup(){
 void draw(){
   frameRate(20);
   int size=50;
-  if (mouseX<=W*dia && mouseX>0 && mouseY<=H*dia && mouseY>0){
+  if (mouseX<=W*dia-1 && mouseX>0 && mouseY<=H*dia-1 && mouseY>0){
     int locX=W*dia+150;
     int locY=height/4;
     
     int i=mouseX/dia, j=mouseY/dia;
     noStroke();fill(200);
-    rect(W*dia+100,0,width,height);
+    rect(W*dia+60,0,width,height);
     
     fill(colors[imageData[i][j]]);
-    ellipse(locX, height/2, size,size);
+    if (drawType==0){
+      ellipse(locX, height/2, size,size);
+    }else{
+      if (chwarChewa) stroke(0);
+      rect(locX-size/2, height/2-size/2, size,size);
+    }
     
     fill(0);
     PFont f = createFont("Arial",16,true);
@@ -129,10 +136,15 @@ void draw(){
       for (int y=j-gridSize; y<=j+gridSize; y++){
         if (x<0 || x>W-1 || y<0 || y>H-1) noFill();
         else fill(colors[imageData[x][y]]);
-        ellipse(locX-(i-x)*cellSize, locY-(j-y)*cellSize,cellSize,cellSize);
+        if (drawType==0){
+          ellipse(locX-(i-x)*cellSize, locY-(j-y)*cellSize,cellSize,cellSize);
+        }else{
+          rect(locX-(i-x)*cellSize-cellSize/2, locY-(j-y)*cellSize-cellSize/2, cellSize, cellSize);
+        }        
       }
     }
-    stroke(0); strokeWeight(2);
+    strokeWeight(2);
+    stroke(0,255,0);
     line(locX-gridSize*cellSize-cellSize/2,locY, locX+gridSize*cellSize+cellSize/2,locY);
     line(locX,locY-gridSize*cellSize-cellSize/2, locX, locY+gridSize*cellSize+cellSize/2);
     fill(0);
@@ -140,6 +152,6 @@ void draw(){
     text(i+1,locX-8, locY-gridSize*cellSize-cellSize/2);
   }else{
     noStroke();fill(200);
-    rect(W*dia+100,0,width,height);
+    rect(W*dia+60,0,width,height);
   }
 }
